@@ -25,24 +25,24 @@ public class AccountController {
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session){
 
-        // TODO: CHECK FOR EMPTY STRINGS:
+        // Проверка на пустую строку
         if(accountName.isEmpty() || accountType.isEmpty()){
-            redirectAttributes.addFlashAttribute("error", "Account Name and Type Cannot be Empty!");
+            redirectAttributes.addFlashAttribute("error", "Поле не может быть пустым.");
             return "redirect:/app/dashboard";
         }
 
-        // TODO: GET LOGGED IN USER:
+        // открытие сессии
         User user = (User)session.getAttribute("user");
 
-        // TODO: GET / GENERATE ACCOUNT NUMBER:
+        // генерация номера аккаунта
         int setAccountNumber = GenAccountNumber.generateAccountNumber();
         String bankAccountNumber = Integer.toString(setAccountNumber);
 
-        // TODO: CREATE ACCOUNT:
+        // создание аккаунта
         accountRepository.createBankAccount(user.getUser_id(), bankAccountNumber, accountName, accountType );
 
-        // Set Success message:
-        redirectAttributes.addFlashAttribute("success", "Account Created Successfully!");
+        // сообщение об успешном создании аккаунта
+        redirectAttributes.addFlashAttribute("success", "Аккаунт успешно создан");
         return "redirect:/app/dashboard";
 
     }
