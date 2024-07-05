@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 
+
 @Controller
 public class AuthController {
 
@@ -25,9 +26,9 @@ public class AuthController {
     public ModelAndView getLogin(){
         System.out.println("In Login Page Controller");
         ModelAndView getLoginPage = new ModelAndView("login");
-        // Set Token String:
+        // генерация токена
         String token = Token.generateToken();
-        // Send Token to View:
+        // добавление токена во View:
         getLoginPage.addObject("token", token);
         getLoginPage.addObject("PageTitle", "Login");
         return getLoginPage;
@@ -40,47 +41,46 @@ public class AuthController {
                         Model model,
                         HttpSession session){
 
-        // TODO: VALIDATE INPUT FIELDS / FORM DATA:
+        // валидация данных
         if(email.isEmpty() || email == null || password.isEmpty() || password == null){
-            model.addAttribute("error", "Username or Password Cannot be Empty");
+            model.addAttribute("error", "Имя пользователя и пароль не могут быть пустыми");
             return "login";
         }
 
-        // TODO: CHECK IF EMAIL EXISTS:
+
+
+
+        // Проверка существования почты
         String getEmailInDatabase = userRepository.getUserEmail(email);
 
-        // Check If Email Exists:
+
         if(getEmailInDatabase != null ){
-            // Get Password In Database:
+            // Получение пароля из БД
             String getPasswordInDatabase = userRepository.getUserPassword(getEmailInDatabase);
 
-            // Validate Password:
+            // Проверка пароля
             if(!BCrypt.checkpw(password, getPasswordInDatabase)){
-                model.addAttribute("error", "Incorrect Username or Password");
+                model.addAttribute("error", "Неверное имя пользователя или пароль");
                 return "login";
             }
-            // End Of Validate Password.
         }else{
-            model.addAttribute("error", "Something went wrong please contact support");
+            model.addAttribute("error", "Произошла непредвиденная ошибка.");
             return "error";
         }
-        // Check If Email Exists.
 
-        // TODO : CHECK IF USER ACCOUNT IS VERIFIED:
+        // Проверка верификации аккаунта
         int verified = userRepository.isVerified(getEmailInDatabase);
 
-        // Check If Account is verified:
         if (verified != 1){
-            String msg = "This Account is not yet Verified, please check email and verify account";
+            String msg = "Аккаунт ещё не подтвержден, проверьте почту и подтвердите аккаунт.";
             model.addAttribute("error", msg);
             return "login";
         }
-        // End Of Check If Account is verified.
 
-        // TODO: PROCEED TO LOG THE USER IN:
+        // Регистрация пользователя в системе
         User user = userRepository.getUserDetails(getEmailInDatabase);
 
-        // Set Session Attributes:
+        // установка атрибутов открытой сессии
         session.setAttribute("user", user);
         session.setAttribute("token", token);
         session.setAttribute("authenticated", true);
@@ -88,12 +88,11 @@ public class AuthController {
         return "redirect:/app/dashboard";
 
     }
-    // End Of Authentication Method.
 
     @GetMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes){
         session.invalidate();
-        redirectAttributes.addFlashAttribute("logged_out", "Logged out successfully");
+        redirectAttributes.addFlashAttribute("logged_out", "Вы успешно вышли.");
         return "redirect:/login";
     }
 
