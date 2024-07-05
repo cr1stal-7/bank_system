@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="form-group col">
-                    <button class="btn btn-lg">Register</button>
+                    <button class="btn btn-lg">Регистрация</button>
                 </div>
 
             </form:form>
