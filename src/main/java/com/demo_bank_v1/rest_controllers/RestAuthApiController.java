@@ -18,22 +18,16 @@ public class RestAuthApiController {
 
     @GetMapping("/login")
     public ResponseEntity validateUserEmail(@PathVariable("email")String email){
-        // Get User Email:
+        // Получение почты
         String userEmail = userRepository.getUserEmail(email);
-        // Init User Password:
         String userPassword = null;
 
-        // Check If Email Is Validate:
+        // Проверка почты на валидность
         if(userEmail != null){
             userPassword = userRepository.getUserPassword(email);
-            // Return Response:
             return new ResponseEntity<>(userPassword, HttpStatus.OK);
         }else{
-            // Return Response:
             return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
         }
-        // ENd Of Check If Email Is Validate.
     }
-    // End f Of Validate User Login.
 }
-// End Of Rest Auth API Controller.

@@ -22,8 +22,8 @@ public class MailConfig {
 
         emailConfig.setHost("smtp.yandex.ru");
         emailConfig.setPort(465);
-        emailConfig.setUsername("no-reply@somecompany.com");
-        emailConfig.setPassword("password123");
+        emailConfig.setUsername("#input_mail");
+        emailConfig.setPassword("#input_password");
 
         return emailConfig;
     }

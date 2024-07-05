@@ -10,7 +10,7 @@ import javax.mail.internet.MimeMessage;
 public class MailMessenger {
 
     public static void htmlEmailMessenger(String from, String toMail, String subject, String body) throws MessagingException {
-        // Get Mail Config:
+        // получение конфигурации почты
         JavaMailSender sender = MailConfig.getMailConfig();
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper htmlMessage = new MimeMessageHelper(message, true);
@@ -20,7 +20,7 @@ public class MailMessenger {
         htmlMessage.setFrom(from);
         htmlMessage.setSubject(subject);
         htmlMessage.setText(body, true);
-        // Send Message:
+        // отправка сообщения
         sender.send(message);
     }
 

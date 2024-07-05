@@ -7,7 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
+// Пользовательский "репозиторий"
+// Получение, обновление данных, запросы к БД
 @Repository
 public interface UserRepository  extends CrudRepository<User, Integer> {
 
@@ -38,7 +39,7 @@ public interface UserRepository  extends CrudRepository<User, Integer> {
     @Query(value = "UPDATE users SET token=null, code=null, verified=1, verified_at=NOW(), updated_at=NOW() WHERE " +
             "token= :token AND code= :code", nativeQuery = true)
     @Transactional
-    void verifyAccount(@Param("token")String token, @Param("code") String code);
+    void verifyAccount(@Param("token")String token, @Param("code")int code);
 
     @Query(value = "SELECT token FROM users WHERE token = :token" , nativeQuery = true)
     String checkToken(@Param("token")String token);

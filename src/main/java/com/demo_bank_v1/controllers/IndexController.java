@@ -32,31 +32,26 @@ public class IndexController {
 
     @GetMapping("/verify")
     public ModelAndView getVerify(@RequestParam("token")String token, @RequestParam("code") String code){
-        // Set View:
         ModelAndView getVerifyPage;
 
-        // Get Token In Database:
+        // Получение токена из БД
         String dbToken = userRepository.checkToken(token);
 
-        // Check If Token Is Valid:
+        // Проверка токена на валидность
         if(dbToken == null){
             getVerifyPage  = new ModelAndView("error");
-            getVerifyPage.addObject("error", "This Session Has Expired");
+            getVerifyPage.addObject("error", "Сессия закрыта");
             return  getVerifyPage;
         }
-        // End Of Check If Token Is Valid.
 
-        // Update and Verify Account:
-        userRepository.verifyAccount(token, code);
+        // Обновление и верификация аккаунта
+        userRepository.verifyAccount(token, Integer.parseInt(code));
 
         getVerifyPage = new ModelAndView("login");
 
-        getVerifyPage.addObject("success", "Account Verified Successfully, Please proceed to Log In!");
+        getVerifyPage.addObject("success", "Аккаунт успешно подтвержден.");
 
         System.out.println("In Verify Account Controller");
         return getVerifyPage;
     }
-    // End Of User Account Verification.
-
-
 }

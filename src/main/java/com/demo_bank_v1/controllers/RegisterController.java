@@ -44,38 +44,40 @@ public class RegisterController {
 
         ModelAndView registrationPage = new ModelAndView("register");
 
-        // Check For Errors:
+        // Проверка поля подтверждения
         if(result.hasErrors() && confirm_password.isEmpty()){
             registrationPage.addObject("confirm_pass", "Поле обязательно");
             return registrationPage;
         }
 
-        // TODO: CHECK FOR PASSWORD MATCH:
+        // проверка паролей на совпадение
         if(!password.equals(confirm_password)){
             registrationPage.addObject("passwordMisMatch", "Пароли не совпадают");
             return registrationPage;
         }
 
-        // TODO: GET TOKEN STRING:
+        // получение токена
         String token = Token.generateToken();
 
-        // TODO: GENERATE RANDOM CODE:
+        // рандомный код
         Random rand = new Random();
         int bound = 123;
         int code = bound * rand.nextInt(bound);
 
-        // TODO: GET EMAIL HTML BODY:
+
         String emailBody = HTML.htmlEmailTemplate(token, code);
-        // TODO: HASH PASSWORD:
+        // bcrypt включает соль прямо в хеш
+        // В процессе проверки, пароль подаётся на вход функции вместе с исходным хешем,
+        // и bcrypt автоматически извлекает из него соль для сравнения.
         String hashed_password = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        // TODO: REGISTER USER:
+        // регистрация пользователя
         userRepository.registerUser(first_name, last_name, email, hashed_password, token, code);
 
-        // TODO: SEND EMAIL NOTIFICATION:
-        MailMessenger.htmlEmailMessenger("no-reply@somecompany.com", email, "Verify Account", emailBody);
+        // отправка сообщения-подтверждения
+        MailMessenger.htmlEmailMessenger("#input_mail", email, "Verify Account", emailBody);
 
-        // TODO: RETURN TO REGISTER PAGE:
+        // возвращение к странице регистрации
         String successMessage = "Аккаунт успешно зарегистрирован, Проверьте почту и подтвердите аккаунт!";
         registrationPage.addObject("success", successMessage);
         return registrationPage;
