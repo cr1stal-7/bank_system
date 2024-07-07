@@ -1,9 +1,4 @@
- DROP DATABASE IF EXISTS bank;
- 
- CREATE DATABASE bank;
-
- 
- -- USERS TABALE STRUCTURE:
+ -- данные пользователя
  CREATE TABLE users(
 	user_id SERIAL PRIMARY KEY ,
     first_name VARCHAR(50) NOT NULL,
@@ -19,7 +14,7 @@
  );
  
  
- -- BANK ACCOUNTS TABLE STRUCTURE:
+ -- данные аккаунта
  CREATE TABLE accounts(
 	 account_id SERIAL PRIMARY KEY,
      user_id INT,
@@ -33,7 +28,7 @@
  );
  
  
- -- TRANSACTION HISTORY TABLE:
+ -- история транзакций
  CREATE TABLE transaction_history(
 	transaction_id SERIAL PRIMARY KEY,
     account_id INT,
@@ -46,7 +41,7 @@
     FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
  );
  
- -- PAYMENTS TABLE STRUCTURE:
+ -- платежи
  CREATE TABLE payments(
 	payment_id SERIAL PRIMARY KEY,
     account_id INT,
@@ -61,7 +56,7 @@
  );
  
  
- -- TRANSACTION HISTORY VIEW:
+ -- история транзакций view
  CREATE VIEW v_transaction_history
  AS
  SELECT 
@@ -87,7 +82,7 @@ ON
  
  
  
- -- PAYMENT HISTORY VIEW:
+ -- история платежей view
  CREATE VIEW v_payments
  AS
  SELECT
@@ -111,10 +106,7 @@ INNER JOIN
 	users AS u
 ON
 	a.user_id = u.user_id;
- 
- 
- 
- 
+
  
  select * from v_transaction_history;
  
