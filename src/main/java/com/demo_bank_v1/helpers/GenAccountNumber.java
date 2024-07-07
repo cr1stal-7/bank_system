@@ -1,7 +1,7 @@
 package com.demo_bank_v1.helpers;
 
 import java.util.Random;
-
+// предоставление метода для генерации случайного номера учетной записи.
 public class GenAccountNumber {
 
     public static int generateAccountNumber(){

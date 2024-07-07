@@ -36,55 +36,58 @@ public class AppController {
     public ModelAndView getDashboard(HttpSession session){
         ModelAndView getDashboardPage = new ModelAndView("dashboard");
 
-        // Get the details of the logged i user:
+        //  извлечение объекта пользователя из сессии и приведение его к типу User
         user = (User)session.getAttribute("user");
 
-        // Get The Accounts Of The Logged In User:
+        // получение списка счетов пользователя по его идентификатору
         List<Account> getUserAccounts = accountRepository.getUserAccountsById(user.getUser_id());
 
-        // Get Balance:
+        // Получение баланса
         BigDecimal totalAccountsBalance = accountRepository.getTotalBalance(user.getUser_id());
 
-        // Set Objects:
+        // обновляется список счетов пользователя (полученный из переменной getUserAccounts)
         getDashboardPage.addObject("userAccounts", getUserAccounts);
+        // добавляется общий баланс всех счетов пользователя
         getDashboardPage.addObject("totalBalance", totalAccountsBalance);
 
         return getDashboardPage;
     }
 
+    // Метод для получения истории платежей
     @GetMapping("/payment_history")
     public ModelAndView getPaymentHistory(HttpSession session){
-        // Set View:
+        // Установить представление:
         ModelAndView getPaymentHistoryPage = new ModelAndView("paymentHistory");
 
-        // Get Logged In User:\
+        // Получить текущего пользователя:
         user = (User) session.getAttribute("user");
 
-        // Get Payment History / Records:
+        // Получить историю платежей пользователя:
         List<PaymentHistory> userPaymentHistory = paymentHistoryRepository.getPaymentRecordsById(user.getUser_id());
 
+        // Добавить историю платежей в модель представления
         getPaymentHistoryPage.addObject("payment_history", userPaymentHistory);
 
         return getPaymentHistoryPage;
-
     }
 
-
+    // Определение метода для получения истории транзакций пользователя
     @GetMapping("/transact_history")
     public ModelAndView getTransactHistory(HttpSession session){
-        // Set View:
+        // Создание объекта ModelAndView для возврата страницы с историей транзакций
         ModelAndView getTransactHistoryPage = new ModelAndView("transactHistory");
 
-        // Get Logged In User:\
+        // Получение информации о текущем пользователе из сессии
         user = (User) session.getAttribute("user");
 
-        // Get Payment History / Records:
+        // Получение списка транзакций пользователя из репозитория
         List<TransactionHistory> userTransactHistory = transactHistoryRepository.getTransactionRecordsById(user.getUser_id());
 
+        // Добавление списка транзакций в модель для передачи на страницу
         getTransactHistoryPage.addObject("transact_history", userTransactHistory);
 
+        // Возврат страницы с историей транзакций
         return getTransactHistoryPage;
-
     }
 
 }

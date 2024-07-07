@@ -43,12 +43,9 @@ public class AuthController {
 
         // валидация данных
         if(email.isEmpty() || email == null || password.isEmpty() || password == null){
-            model.addAttribute("error", "Имя пользователя и пароль не могут быть пустыми");
+            model.addAttribute("error", "Почта и пароль не могут быть пустыми.");
             return "login";
         }
-
-
-
 
         // Проверка существования почты
         String getEmailInDatabase = userRepository.getUserEmail(email);
@@ -64,8 +61,8 @@ public class AuthController {
                 return "login";
             }
         }else{
-            model.addAttribute("error", "Произошла непредвиденная ошибка.");
-            return "error";
+            model.addAttribute("error", "Такого пользователя не существует.");
+            return "login";
         }
 
         // Проверка верификации аккаунта

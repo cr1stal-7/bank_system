@@ -1,7 +1,7 @@
 package com.demo_bank_v1.helpers;
 
 import java.util.UUID;
-
+// генерация токена
 public class Token {
 
     public static String generateToken(){

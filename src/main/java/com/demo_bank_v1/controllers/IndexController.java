@@ -22,11 +22,16 @@ public class IndexController {
     }
 
 
+    // Метод, обработчик GET-запросов на эндпоинт "/error".
     @GetMapping("/error")
     public ModelAndView getError(){
+        // возвращение объекта ModelAndView для страницы ошибки ("error").
         ModelAndView getErrorPage = new ModelAndView("error");
+        // Добавляет атрибут "PageTitle" со значением "Errors".
         getErrorPage.addObject("PageTitle", "Errors");
+        // Выводит сообщение в консоль о том, что контроллер перешел на страницу ошибки.
         System.out.println("In Error Page Controller");
+        // Возвращает объект ModelAndView для отображения страницы ошибки.
         return getErrorPage;
     }
 

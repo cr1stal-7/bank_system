@@ -12,10 +12,8 @@ public class User {
     @Id
     private int user_id;
     @NotEmpty(message = "Поле не может быть пустым.")
-    @Size(min=3, message = "Минимальная длина - 3 символа.")
     private String first_name;
     @NotEmpty(message = "Поле не может быть пустым.")
-    @Size(min=3, message = "Минимальная длина - 3 символа.")
     private String last_name;
     @Email
     @NotEmpty
