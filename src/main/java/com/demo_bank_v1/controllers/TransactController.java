@@ -37,40 +37,39 @@ public class TransactController {
                           HttpSession session,
                           RedirectAttributes redirectAttributes){
 
-        // TODO: CHECK FOR EMPTY STRINGS:
+        //Проверка на пустые строки:
         if(depositAmount.isEmpty() || accountID.isEmpty()){
-            redirectAttributes.addFlashAttribute("error", "Deposit Amount or Account Depositing to Cannot Be Empty!");
+            redirectAttributes.addFlashAttribute("error", "Сумма депозита или номер счета не могут быть пустыми");
             return "redirect:/app/dashboard";
         }
-        // TODO GET LOGGED IN USER:
+        //Получить вошедшего пользователя:
         user = (User)session.getAttribute("user");
 
-        // TODO: GET CURRENT ACCOUNT BALANCE:
+        //Получить текущий баланс счета:
         int acc_id = Integer.parseInt(accountID);
 
         double depositAmountValue = Double.parseDouble(depositAmount);
 
-        //TODO: CHECK IF DEPOSIT AMOUNT IS 0 (ZERO):
+        //Проверка, является ли сумма депозита равной 0:
         if(depositAmountValue == 0){
-            redirectAttributes.addFlashAttribute("error", "Deposit Amount Cannot Be of 0 (Zero) Value");
+            redirectAttributes.addFlashAttribute("error", "Сумма депозита не может быть равной 0");
             return "redirect:/app/dashboard";
         }
 
-        // TODO: UPDATE BALANCE:
+        //Обновление баланса:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), acc_id);
 
         newBalance = currentBalance + depositAmountValue;
 
-        // Update Account:
+        //Обновление счета:
         accountRepository.changeAccountBalanceById(newBalance, acc_id);
 
-        // Log Successful Transaction:
+        //Запись успешной транзакции:
         transactRepository.logTransaction(acc_id, "deposit", depositAmountValue, "online", "success", "Deposit Transaction Successful",currentDateTime);
 
         redirectAttributes.addFlashAttribute("success", "Amount Deposited Successfully");
         return "redirect:/app/dashboard";
     }
-    // End Of Deposits.
 
     @PostMapping("/transfer")
     public String transfer(@RequestParam("transfer_from") String transfer_from,
@@ -78,45 +77,45 @@ public class TransactController {
                            @RequestParam("transfer_amount")String transfer_amount,
                            HttpSession session,
                            RedirectAttributes redirectAttributes){
-        // Init Error Message Value:
+        //Установить значение сообщения об ошибке:
         String errorMessage;
 
-        // TODO: CHECK FOR EMPTY FIELDS:
+        //Проверка на пустые поля:
         if(transfer_from.isEmpty() || transfer_to.isEmpty() || transfer_amount.isEmpty()){
-             errorMessage = "The account transferring from and to along with the amount cannot be empty!";
+             errorMessage = "Номера счетов для перевода и сумма не могут быть пустыми!";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: CONVERT VARIABLES:
+        //Конвертация переменных:
         int transferFromId = Integer.parseInt(transfer_from);
         int transferToId = Integer.parseInt(transfer_to);
         double transferAmount = Double.parseDouble(transfer_amount);
 
-        // TODO: CHECK IF TRANSFERRING INTO THE SAME ACCOUNT:
+        //Проверка на перевод на тот же счет:
         if(transferFromId == transferToId){
-            errorMessage = "Cannot Transfer Into The same Account, Please select the appropriate account to perform transfer";
+            errorMessage = "Нельзя перевести деньги на тот же счет. Пожалуйста, выберите другой счет для перевода.";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: CHECK FOR 0 (ZERO) VALUES:
+        //Проверка на значение 0
         if(transferAmount == 0){
-            errorMessage = "Cannot Transfer an amount of 0 (Zero) value, please enter a value greater than 0 (Zero) ";
+            errorMessage = "Нельзя перевести сумму равную 0. Пожалуйста, введите значение больше 0.";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: GET LOGGED IN USER:
+        //Получить текущего пользователя:
         user = (User)session.getAttribute("user");
 
-        // TODO: GET CURRENT BALANCE:
+        //Получить текущий баланс счета, с которого происходит перевод:
         double currentBalanceOfAccountTransferringFrom  = accountRepository.getAccountBalance(user.getUser_id(), transferFromId);
 
-        // TODO: CHECK IF TRANSFER AMOUNT IS MORE THAN CURRENT BALANCE:
+        //Проверка на достаточность средств для перевода:
         if(currentBalanceOfAccountTransferringFrom < transferAmount){
-            errorMessage = "You Have insufficient Funds to perform this Transfer!";
-            // Log Failed Transaction:
+            errorMessage = "У вас недостаточно средств для выполнения этого перевода!";
+            //Запись неудачной транзакции:
             transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "failed", "Insufficient Funds", currentDateTime);
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
@@ -124,25 +123,25 @@ public class TransactController {
 
         double  currentBalanceOfAccountTransferringTo = accountRepository.getAccountBalance(user.getUser_id(), transferToId);
 
-        // TODO: SET NEW BALANCE:
+        //Установить новый баланс
         double newBalanceOfAccountTransferringFrom = currentBalanceOfAccountTransferringFrom - transferAmount;
 
         double newBalanceOfAccountTransferringTo = currentBalanceOfAccountTransferringTo + transferAmount;
 
-        // Changed The Balance Of the Account Transferring From:
+        //Изменить баланс счета, с которого происходит перевод:
         accountRepository.changeAccountBalanceById( newBalanceOfAccountTransferringFrom, transferFromId);
 
-        // Changed The Balance Of the Account Transferring To:
+        //Изменить баланс счета, на который происходит перевод:
         accountRepository.changeAccountBalanceById(newBalanceOfAccountTransferringTo, transferToId);
 
-        // Log Successful Transaction:
+        //Запись успешной транзакции:
         transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "success", "Transfer Transaction Successful",currentDateTime);
 
         String successMessage = "Amount Transferred Successfully!";
         redirectAttributes.addFlashAttribute("success", successMessage);
         return "redirect:/app/dashboard";
     }
-    // End Of Transfer Method.
+
 
     @PostMapping("/withdraw")
     public String withdraw(@RequestParam("withdrawal_amount")String withdrawalAmount,
@@ -153,52 +152,51 @@ public class TransactController {
         String errorMessage;
         String successMessage;
 
-        // TODO: CHECK FOR EMPTY VALUES:
+        //Проверка на пустые значения:
         if(withdrawalAmount.isEmpty() || accountID.isEmpty()){
-            errorMessage = "Withdrawal Amount and Account Withdrawing From Cannot be Empty ";
+            errorMessage = "Сумма снятия и номер счета не могут быть пустыми ";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
-        // TODO: COVERT VARIABLES:
+        //Конвертация переменных:
         double withdrawal_amount = Double.parseDouble(withdrawalAmount);
         int account_id = Integer.parseInt(accountID);
 
-        // TODO: CHECK FOR 0 (ZERO) VALUES:
+        //Проверка на нулевое значение:
         if (withdrawal_amount == 0){
-            errorMessage = "Withdrawal Amount Cannot be of 0 (Zero) value, please enter a value greater than 0 (Zero)";
+            errorMessage = "Сумма снятия не может быть равна 0, пожалуйста, введите значение больше 0";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: GET LOGGED IN USER:
+        //Получить авторизованного пользователя:
         user = (User) session.getAttribute("user");
 
-        // TODO: GET CURRENT BALANCE:
+        //Получить текущий баланс:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), account_id);
 
-        // TODO: CHECK IF TRANSFER AMOUNT IS MORE THAN CURRENT BALANCE:
+        //Проверка на достаточность средств для снаятия:
         if(currentBalance < withdrawal_amount){
-            errorMessage = "You Have insufficient Funds to perform this Withdrawal!";
+            errorMessage = "У вас недостаточно средств для выполнения этого снятия!";
             // Log Failed Transaction:
             transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "failed", "Insufficient Funds", currentDateTime);
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: SET NEW BALANCE:
+        //Установить новый баланс
         newBalance = currentBalance - withdrawal_amount;
 
-        // TODO: UPDATE ACCOUNT BALANCE:
+        //Обновить баланс счета
         accountRepository.changeAccountBalanceById(newBalance, account_id);
 
-        // Log Successful Transaction:
+        //Запись успешной транзакции
         transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "success", "Withdrawal Transaction Successful",currentDateTime);
 
-        successMessage = "Withdrawal Successful!";
+        successMessage = "Снятие прошло успешно!";
         redirectAttributes.addFlashAttribute("success", successMessage);
         return "redirect:/app/dashboard";
     }
-    // End Of Withdrawal Method.
 
     @PostMapping("/payment")
     public String payment(@RequestParam("beneficiary")String beneficiary,
@@ -212,34 +210,34 @@ public class TransactController {
         String errorMessage;
         String successMessage;
 
-        // TODO: CHECK FOR EMPTY VALUES:
+        //Проверка на пустые значения:
         if(beneficiary.isEmpty() || account_number.isEmpty() || account_id.isEmpty() || payment_amount.isEmpty()){
-            errorMessage = "Beneficiary, Account Number, Account Paying From and Payment Amount Cannot be Empty! ";
+            errorMessage = "Получатель, Номер счета, Номер счета для оплаты и Сумма платежа не могут быть пустыми!";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: CONVERT VARIABLES:
+        //Конвертация переменных:
         int accountID = Integer.parseInt(account_id);
         double paymentAmount = Double.parseDouble(payment_amount);
 
-        // TODO: CHECK FOR 0 (ZERO) VALUES:
+        //Проверка на нулевые значения суммы платежа:
         if(paymentAmount == 0){
-            errorMessage = "Payment Amount Cannot be of 0 (Zero) value, please enter a value greater than 0 (Zero) ";
+            errorMessage = "Сумма платежа не может быть равна 0, введите значение больше 0 ";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
 
-        // TODO: GET LOGGED IN USER:
+        //Получить авторизованного пользователя:
         user = (User) session.getAttribute("user");
 
-        // TODO: GET CURRENT BALANCE:
+        //Получить текущий баланс:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), accountID);
 
-        // TODO: CHECK IF PAYMENT AMOUNT IS MORE THAN CURRENT BALANCE:
+        //Проверка что сумма платежа не больше текущего баланса
         if(currentBalance < paymentAmount){
-            errorMessage = "You Have insufficient Funds to perform this payment";
-            String reasonCode = "Could not Processed Payment due to insufficient funds!";
+            errorMessage = "У вас недостаточно средств для выполнения этого платежа";
+            String reasonCode = "Не удалось обработать платеж из-за недостатка средств!";
             paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "failed", reasonCode, currentDateTime);
             // Log Failed Transaction:
             transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "failed", "Insufficient Funds", currentDateTime);
@@ -247,23 +245,22 @@ public class TransactController {
             return "redirect:/app/dashboard";
         }
 
-        // TODO SET NEW BALANCE FOR ACCOUNT PAYING FROM:
+        //Установить новый баланс для счета оплаты:
         newBalance = currentBalance - paymentAmount;
 
-        // TODO: MAKE PAYMENT:
-        String reasonCode = "Payment Processed Successfully!";
+        //Совершить платеж:
+        String reasonCode = "Платеж успешно обработан!";
         paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "success", reasonCode, currentDateTime);
 
-        // TODO: UPDATE ACCOUNT PAYING FROM:
+        //Обновить баланс счета оплаты:
         accountRepository.changeAccountBalanceById(newBalance, accountID);
 
-        // Log Successful Transaction:
+        //Запись успешной транзакции:
         transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "success", "Payment Transaction Successful",currentDateTime);
 
         successMessage = reasonCode;
         redirectAttributes.addFlashAttribute("success", successMessage);
         return "redirect:/app/dashboard";
     }
-    // End Of Payment Method.
 
 }
