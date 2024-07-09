@@ -28,7 +28,7 @@
        <div class="card">
             <!-- Card Header -->
             <div class="card-header">
-                <i class="fas fa-credit-card me-2" aria-hidden="true"></i> Payment History
+                <i class="fas fa-credit-card me-2" aria-hidden="true"></i> История платежей
             </div>
             <!-- End Of Card Header -->
             <!-- Card Body -->
@@ -37,14 +37,14 @@
                 <!-- Payment History Table -->
                 <table class="table text-center table-striped">
                     <tr>
-                        <th>Record Number</th>
-                        <th>Beneficiary</th>
-                        <th>Beneficiary Account Number</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Reference</th>
-                        <th>Reason Code</th>
-                        <th>Created at</th>
+                        <th>Номер записи</th>
+                        <th>Получатель</th>
+                        <th>Номер счета получателя</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Ссылка</th>
+                        <th>Код причины</th>
+                        <th>Время создания</th>
                     </tr>
                     <!-- Loop Through Payment History Records -->
                     <c:forEach items="${requestScope.payment_history}" var="payments">

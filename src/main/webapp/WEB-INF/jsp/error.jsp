@@ -14,7 +14,7 @@
         }
         body{
             height: 100vh;
-            background-image: url("../resources/static/images/main.png");
+            background-image: url("../resources/static/images/main.svg");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -26,13 +26,13 @@
             font-size: 16px;
         }
     </style>
-    <title>Ошибки</title>
+    <title>Ошибка</title>
 </head>
 <body class="d-flex align-items-center justify-content-center">
 
     <div class="card col-4 alert alert-danger border border-danger text-danger">
         <h3 class="card-title">
-            <i class="fa fa-window-close me-2"></i>Ошибки:
+            <i class="fa fa-window-close me-2"></i>Ошибка:
         </h3>
         <hr>
         <div class="card-body">
