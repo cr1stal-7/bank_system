@@ -16,30 +16,23 @@ public class AppInterceptor  implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("In Pre Handle Interceptor Method");
-        // TODO: CHECK REQUEST URI:
+        //Проверяем URI запроса
         if(request.getRequestURI().startsWith("/app")){
-            // Get Session:
             HttpSession session = request.getSession();
 
-            // TODO: Get Token Stored In Session:
+            //Получить токен, сохраненный в сеансе
             String token = (String) session.getAttribute("token");
             System.out.println(token);
-            // TODO: Get User Object Stored In Session:
+            //Получить обьект, сохраненный в сеансе
             User user = (User)session.getAttribute("user");
-            // TODO: Check if Authenticated:
-            // boolean isAuthenticated = (boolean) session.getAttribute("authenticated");
 
-            // TODO: Validate Session Attributes / Objects:
             if(token == null || user == null){
                 response.sendRedirect("/login");
                 return false;
             }
-            // End Of Validate Session Attributes / Objects.
         }
-        // End Of Check Request URI.
         return true;
     }
-    // End Of Pre Handle Method.
 
 
     @Override

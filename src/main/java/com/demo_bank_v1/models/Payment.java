@@ -2,9 +2,11 @@ package com.demo_bank_v1.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "payments")
 public class Payment {
     @Id
     private int payment_id;

@@ -29,7 +29,7 @@ public class TransactController {
     User user;
     double currentBalance;
     double newBalance;
-    LocalDateTime currentDateTime = LocalDateTime.now();
+    LocalDateTime currentDateTime;
 
     @PostMapping("/deposit")
     public String deposit(@RequestParam("deposit_amount")String depositAmount,
@@ -65,9 +65,10 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalance, acc_id);
 
         //Запись успешной транзакции:
-        transactRepository.logTransaction(acc_id, "deposit", depositAmountValue, "online", "success", "Deposit Transaction Successful",currentDateTime);
+        currentDateTime = LocalDateTime.now();
+        transactRepository.logTransaction(acc_id, "Депозит", depositAmountValue, "online", "Успешно", "Депозит успешно выполнен",currentDateTime);
 
-        redirectAttributes.addFlashAttribute("success", "Amount Deposited Successfully");
+        redirectAttributes.addFlashAttribute("success", "Депозит успешно выполнен");
         return "redirect:/app/dashboard";
     }
 
@@ -82,7 +83,7 @@ public class TransactController {
 
         //Проверка на пустые поля:
         if(transfer_from.isEmpty() || transfer_to.isEmpty() || transfer_amount.isEmpty()){
-             errorMessage = "Номера счетов для перевода и сумма не могут быть пустыми!";
+            errorMessage = "Номера счетов для перевода и сумма не могут быть пустыми!";
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -116,7 +117,8 @@ public class TransactController {
         if(currentBalanceOfAccountTransferringFrom < transferAmount){
             errorMessage = "У вас недостаточно средств для выполнения этого перевода!";
             //Запись неудачной транзакции:
-            transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "failed", "Insufficient Funds", currentDateTime);
+            currentDateTime = LocalDateTime.now();
+            transactRepository.logTransaction(transferFromId, "Перевод", transferAmount, "online", "Ошибка", "Недостаточно средств", currentDateTime);
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -135,9 +137,10 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalanceOfAccountTransferringTo, transferToId);
 
         //Запись успешной транзакции:
-        transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "success", "Transfer Transaction Successful",currentDateTime);
+        currentDateTime = LocalDateTime.now();
+        transactRepository.logTransaction(transferFromId, "Перевод", transferAmount, "online", "Успешно", "Перевод успешно выполнен",currentDateTime);
 
-        String successMessage = "Amount Transferred Successfully!";
+        String successMessage = "Перевод успешно выполнен";
         redirectAttributes.addFlashAttribute("success", successMessage);
         return "redirect:/app/dashboard";
     }
@@ -175,11 +178,12 @@ public class TransactController {
         //Получить текущий баланс:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), account_id);
 
-        //Проверка на достаточность средств для снаятия:
+        //Проверка на достаточность средств для снятия:
         if(currentBalance < withdrawal_amount){
             errorMessage = "У вас недостаточно средств для выполнения этого снятия!";
-            // Log Failed Transaction:
-            transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "failed", "Insufficient Funds", currentDateTime);
+            //Запись неудачной транзакции:
+            currentDateTime = LocalDateTime.now();
+            transactRepository.logTransaction(account_id, "Снятие", withdrawal_amount, "online", "Ошибка", "Недостаточно средств", currentDateTime);
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -191,7 +195,8 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalance, account_id);
 
         //Запись успешной транзакции
-        transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "success", "Withdrawal Transaction Successful",currentDateTime);
+        currentDateTime = LocalDateTime.now();
+        transactRepository.logTransaction(account_id, "Снятие", withdrawal_amount, "online", "Успешно", "Снятие успешно выполнено",currentDateTime);
 
         successMessage = "Снятие прошло успешно!";
         redirectAttributes.addFlashAttribute("success", successMessage);
@@ -238,9 +243,10 @@ public class TransactController {
         if(currentBalance < paymentAmount){
             errorMessage = "У вас недостаточно средств для выполнения этого платежа";
             String reasonCode = "Не удалось обработать платеж из-за недостатка средств!";
-            paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "failed", reasonCode, currentDateTime);
-            // Log Failed Transaction:
-            transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "failed", "Insufficient Funds", currentDateTime);
+            currentDateTime = LocalDateTime.now();
+            paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "Ошибка", reasonCode, currentDateTime);
+            //Запись неудачной транзакции:
+            transactRepository.logTransaction(accountID, "Платеж", paymentAmount, "online", "Ошибка", "Недостаточно средств", currentDateTime);
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -250,13 +256,14 @@ public class TransactController {
 
         //Совершить платеж:
         String reasonCode = "Платеж успешно обработан!";
-        paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "success", reasonCode, currentDateTime);
+        currentDateTime = LocalDateTime.now();
+        paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "Успешно", reasonCode, currentDateTime);
 
         //Обновить баланс счета оплаты:
         accountRepository.changeAccountBalanceById(newBalance, accountID);
 
         //Запись успешной транзакции:
-        transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "success", "Payment Transaction Successful",currentDateTime);
+        transactRepository.logTransaction(accountID, "Платеж", paymentAmount, "online", "Успешно", "Платеж успешно выполнен",currentDateTime);
 
         successMessage = reasonCode;
         redirectAttributes.addFlashAttribute("success", successMessage);
