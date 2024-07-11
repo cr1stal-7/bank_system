@@ -10,7 +10,7 @@
             <div class="card-body">
                 <!-- Card Title -->
                 <h1 class="card-title">
-                    <i class="fas fa-ban text-danger"></i> Нет зарегестрированных аккаунтов
+                    <i class="fas fa-ban text-danger"></i> Нет зарегистрированных аккаунтов
                 </h1>
                  <!-- End Of Card Title -->
                 <hr>
@@ -21,7 +21,7 @@
                  </div>
                  <!-- End Of Card Text -->
                  <br>
-                 <button id="" class="btn btn-primary btn-lg shadow" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                 <button class="btn btn-primary btn-lg shadow" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
                     <i class="fa fa-credit-card"></i> Добавить новую учётную запись
                  </button>
 

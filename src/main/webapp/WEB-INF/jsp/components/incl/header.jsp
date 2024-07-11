@@ -5,7 +5,9 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="css/fontawesome/css/all.css">
     <link rel="stylesheet" href="css/default.css">
+
     <header class="main-page-header mb-3">
+
         <div class="container d-flex align-items-center">
             <div class="company-name">
                 QBank
