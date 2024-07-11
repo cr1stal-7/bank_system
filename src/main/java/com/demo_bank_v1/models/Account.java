@@ -3,10 +3,12 @@ package com.demo_bank_v1.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "accounts")
 public class Account {
 
     @Id
@@ -82,4 +84,5 @@ public class Account {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
+
 }

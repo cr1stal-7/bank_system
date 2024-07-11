@@ -21,7 +21,7 @@
     <!-- Container: Total Accounts Balance Display  -->
     <div class="container d-flex py-3">
         <h2 class="me-auto" style = "color:rgb(255, 255, 255)">Общий баланс аккаунтов:</h2>
-        <h2 class="ms-auto">
+        <h2 class="ms-auto" style = "color:rgb(255, 255, 255)">
             <c:if test="${requestScope.totalBalance != null}">
                 <c:out value="${totalBalance}"/>
             </c:if>
@@ -51,7 +51,7 @@
                         <li class="list-group-item d-flex">Номер аккаунта <span class="ms-auto"><b>${account.account_number}</b></span></li>
                         <li class="list-group-item d-flex">Тип аккаунта <span class="ms-auto"><b>${account.account_type}</b></span></li>
                         <li class="list-group-item d-flex">Счёт аккаунта <span class="ms-auto"><b>${account.balance}</b></span></li>
-                        <li class="list-group-item d-flex">Время создания <span class="ms-auto"><b>${account.created_at}</b></span></li>
+                        <li class="list-group-item d-flex">Время создания <span class="ms-auto"><b>${account.updated_at}</b></span></li>
                     </ul>
                     <!-- Account Details List -->
                 </div>
